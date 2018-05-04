@@ -9,7 +9,8 @@ public class Player : MonoBehaviour {
     public Statistic speed=new Statistic(1f,10f,100f);
     public Statistic energy=new Statistic(10f,100f,1000f);
 
-    public System.Action OnDeath;
+    // On Death Event
+    public event System.Action OnDeath;
 
     // Use this for initialization
     void Start () {
@@ -18,10 +19,13 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (health.getValue() < 0)
+        if (health.getValue() <= 0)
         {
             if (OnDeath != null) OnDeath();
         }
 	}
-
+   public void Damage(float dmg)
+    {
+        health.plainValue -= dmg;
+    }
 }
