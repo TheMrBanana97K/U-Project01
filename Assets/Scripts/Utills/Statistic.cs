@@ -13,8 +13,11 @@ public class Statistic  {
     public List<float> percentModifiers;
 
 
-    Statistic()
+    public Statistic(float bV=0.0f,float pV=1.0f,float mV=10000f)
     {
+        baseValue = bV;
+        plainValue = pV;
+        maxValue = mV;
         linearBonuses = new List<float>();
         percentModifiers = new List<float>();
 
@@ -27,31 +30,31 @@ public class Statistic  {
         float val = baseValue + (GetLinearBonus() + plainValue) * GetPercentModifier();
         return val > maxValue ? maxValue : val;
     }
-    void AddPercentModifier(float modifier)
+  public  void AddPercentModifier(float modifier)
     {
         percentModifiers.Add(modifier);
     }
-    void RemovePercentModifier(float modifier)
+    public void RemovePercentModifier(float modifier)
     {
         percentModifiers.Remove(modifier);
     }
-    void AddLinearBonus(float bonus)
+    public void AddLinearBonus(float bonus)
     {
         linearBonuses.Add(bonus);
     }
-    void RemoveLinearBonus(float bonus)
+    public void RemoveLinearBonus(float bonus)
     {
         linearBonuses.Remove(bonus);
 
     }
-    float GetLinearBonus()
+  float GetLinearBonus()
     {
         float linearBonus = 0;
         for (int i = 0; i < linearBonuses.Count; i++)
             linearBonus += linearBonuses[i];
         return linearBonus;
     }
-    float GetPercentModifier()
+ float GetPercentModifier()
     {
         float percentModifier = 1f;
         for (int i = 0; i < percentModifiers.Count; i++)
