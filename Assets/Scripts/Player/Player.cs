@@ -6,8 +6,8 @@ public class Player : MonoBehaviour {
 
     [Header("Player Stats")]
     public Statistic health=new Statistic(0f,100f,1000f);
-    public Statistic speed=new Statistic(0f,10f,100f);
-    public Statistic energy=new Statistic(0f,100f,1000f);
+    public Statistic speed=new Statistic(1f,10f,100f);
+    public Statistic energy=new Statistic(10f,100f,1000f);
 
     public System.Action OnDeath;
 
