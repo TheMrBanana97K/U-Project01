@@ -27,6 +27,7 @@ public class ArmGear : MonoBehaviour {
     }
     void ActivateSpell(int i)
     {
+        if(slots[i-1]!=null)
         slots[i - 1].TriggerAbility();
     }
 }
