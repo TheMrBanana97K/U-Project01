@@ -7,7 +7,7 @@ public class HealSpell : Ability
 {
 
     GameObject parent;
-    public float HealAmout;
+    public float HealAmount;
      Player target;
     
 
@@ -20,7 +20,8 @@ public class HealSpell : Ability
 
     public override void TriggerAbility()
     {
-        target.health.plainValue += HealAmout;
+        Debug.Log("Heal");
+        target.health.plainValue += HealAmount;
         
     }
 

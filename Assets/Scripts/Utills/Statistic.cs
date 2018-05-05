@@ -7,10 +7,10 @@ public class Statistic  {
     // value witrhoud any modifiers
     public float plainValue = 1.0f;
     // value if modifier == 0%
-    public float baseValue = 0.0f;
+     float baseValue = 0.0f;
     // maximum value
-    private float maxValue = 1000.0f;
-    public float maxTotalValue = 1000.0f;
+    float maxTotalValue = 1000.0f;
+    float maxValue = 1000.0f;
 
     // TODO: make private ( now just for showing in Unity)
     [Header("Bonuses")]
@@ -31,7 +31,7 @@ public class Statistic  {
 
     }
 
-
+   
     public float getValue()
     {
         plainValue = Mathf.Min(plainValue, getMaxValue());
@@ -39,7 +39,7 @@ public class Statistic  {
         float val = baseValue + (GetBonus(linearBonuses,0,true) + plainValue) * GetBonus(percentModifiers,1f);
         return Mathf.Min(val,getMaxValue());
     }
-    public float getMaxValue()
+    private float getMaxValue()
     {
         float val = baseValue + (GetBonus(linearBonuses, 0, true) + maxValue) * GetBonus(percentModifiers, 1f);
         return Mathf.Min(val, maxTotalValue); ;

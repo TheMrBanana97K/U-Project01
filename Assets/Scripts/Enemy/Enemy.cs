@@ -5,27 +5,68 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class Enemy : MonoBehaviour {
 
-   public  enum EnemyState{Chasing,idle,Attacking };
+   public  enum EnemyState{Chasing,Idle,Attacking };
     public EnemyState state;
 
     public int speed;
     public int attackSpeed;
+    public int attackDamage = 10;
+    
+    public int timeBetweenAttacks=300; // in ms
+    public float attackDistance;
 
     Material skinMaterial;
     NavMeshAgent pathfinder;
     Transform target;
+    Player targetPlayer;
+    bool hasTarget;
+    System.Diagnostics.Stopwatch attackTime = new System.Diagnostics.Stopwatch();
+
 	// Use this for initialization
 	void Start () {
         skinMaterial = GetComponent<Renderer>().material;
         pathfinder = GetComponent<NavMeshAgent>();
         pathfinder.speed = speed;
-        target = GameObject.FindGameObjectWithTag("Player").transform;
-        state = EnemyState.Chasing;
-        StartCoroutine(ChasePlayer());
+        attackTime.Start();
+        if (GameObject.FindGameObjectWithTag("Player") != null)
+        {
+            state = EnemyState.Chasing;
+            hasTarget = true;
+
+            target = GameObject.FindGameObjectWithTag("Player").transform;
+            targetPlayer = target.GetComponent<Player>();
+            targetPlayer.OnDeath += OnTargetDeath;
+
+            StartCoroutine(ChasePlayer());
+
+
+        }
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        if (hasTarget)
+        {
+            
+            if (attackTime.ElapsedMilliseconds > timeBetweenAttacks)
+            {
+                attackTime.Stop();
+                float sqrDstToTarget = (target.position - transform.position).sqrMagnitude;
+                if (sqrDstToTarget < Mathf.Pow(attackDistance, 2))
+                {
+
+                    attackTime.Reset();
+                    attackTime.Start();
+                    StartCoroutine(Attack());
+                }
+            }
+            
+        }
+    }
+    void OnTargetDeath()
+    {
+        hasTarget = false;
+        state = EnemyState.Idle;
     }
 
     IEnumerator ChasePlayer()
@@ -35,12 +76,11 @@ public class Enemy : MonoBehaviour {
             if (state == EnemyState.Chasing)
             {
                 Vector3 dirToTarget = (target.position - transform.position).normalized;
-                Vector3 targetPosition = target.position - dirToTarget * 5;
+                Vector3 targetPosition = target.position - dirToTarget;
                 pathfinder.SetDestination(targetPosition);
             }
 
-            float distance = Vector3.Distance(transform.position, target.position);
-            float distancePercent = (distance * 10 - 10) / 100;
+          
     
 
             yield return new WaitForSeconds(0.5f);
@@ -59,7 +99,11 @@ public class Enemy : MonoBehaviour {
             percent += Time.deltaTime * attackSpeed;
             float interpolation = (-Mathf.Pow(percent, 2) + percent) * 4;
             transform.position = Vector3.Lerp(orginalPosition, attackPosition, interpolation);
+
             yield return null;
         }
+        targetPlayer.Damage(attackDamage);
+        state = EnemyState.Chasing;
+        pathfinder.enabled = true;
     }
 }
