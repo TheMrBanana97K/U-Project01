@@ -9,11 +9,11 @@ public class Statistic  {
     // value if modifier == 0%
     public float baseValue = 0.0f;
     // maximum value
-    public float maxValue = 1000.0f;
+    private float maxValue = 1000.0f;
+    public float maxTotalValue = 1000.0f;
 
     // TODO: make private ( now just for showing in Unity)
     [Header("Bonuses")]
-    [Range(-1,1)]
     public List<float> linearBonuses;
     [Range(-1, 1)]
     public List<float> percentModifiers;
@@ -23,7 +23,8 @@ public class Statistic  {
     {
         baseValue = bV;
         plainValue = pV;
-        maxValue = mV;
+        maxValue = pV;
+        maxTotalValue = mV;
         linearBonuses = new List<float>();
         percentModifiers = new List<float>();
 
@@ -33,9 +34,15 @@ public class Statistic  {
 
     public float getValue()
     {
+        plainValue = Mathf.Min(plainValue, getMaxValue());
 
-        float val = baseValue + (GetBonus(linearBonuses,0) + plainValue) * GetBonus(percentModifiers,1f);
-        return Mathf.Min(val,maxValue);
+        float val = baseValue + (GetBonus(linearBonuses,0,true) + plainValue) * GetBonus(percentModifiers,1f);
+        return Mathf.Min(val,getMaxValue());
+    }
+    public float getMaxValue()
+    {
+        float val = baseValue + (GetBonus(linearBonuses, 0, true) + maxValue) * GetBonus(percentModifiers, 1f);
+        return Mathf.Min(val, maxTotalValue); ;
     }
     public  void AddPercentModifier(float modifier)
     {
@@ -46,23 +53,27 @@ public class Statistic  {
     {
         percentModifiers.Remove(modifier);
     }
-    public void AddLinearBonus(float bonus)
+    public void AddLinearBonus(float modifier)
     {
-        bonus = Mathf.Clamp(bonus, -1, 1);
         
-        linearBonuses.Add(bonus);
+        linearBonuses.Add(modifier);
     }
-    public void RemoveLinearBonus(float bonus)
+    public void RemoveLinearBonus(float modifier)
     {
-        linearBonuses.Remove(bonus);
+        modifier = Mathf.Clamp(modifier, -100, 100);
+
+        linearBonuses.Remove(modifier);
 
     }
 
-    float GetBonus(List<float> bonuses,float initialBonus)
+    float GetBonus(List<float> bonuses,float initialBonus,bool canBeNegative=false)
     {
     
         for (int i = 0; i < bonuses.Count; i++)
             initialBonus += bonuses[i];
+        if (canBeNegative)
+            return initialBonus;
+        else
         return initialBonus >= 0 ? initialBonus : 0;
     }
  
