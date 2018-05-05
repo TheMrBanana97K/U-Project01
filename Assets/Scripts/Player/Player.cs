@@ -9,12 +9,15 @@ public class Player : MonoBehaviour {
     public Statistic speed=new Statistic(1f,10f,100f);
     public Statistic energy=new Statistic(10f,100f,1000f);
 
+    [Header("Player Status")]
+    public bool isDead;
+
     // On Death Event
     public event System.Action OnDeath;
 
     // Use this for initialization
     void Start () {
-        
+        OnDeath += OnDeathEvent;
 	}
 	
 	// Update is called once per frame
@@ -27,5 +30,10 @@ public class Player : MonoBehaviour {
    public void Damage(float dmg)
     {
         health.plainValue -= dmg;
+    }
+    void OnDeathEvent()
+    {
+        isDead = true;
+        Destroy(gameObject);
     }
 }

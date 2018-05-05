@@ -13,7 +13,9 @@ public class Statistic  {
 
     // TODO: make private ( now just for showing in Unity)
     [Header("Bonuses")]
+    [Range(-1,1)]
     public List<float> linearBonuses;
+    [Range(-1, 1)]
     public List<float> percentModifiers;
 
 
@@ -32,11 +34,12 @@ public class Statistic  {
     public float getValue()
     {
 
-        float val = baseValue + (GetLinearBonus() + plainValue) * GetPercentModifier();
+        float val = baseValue + (GetBonus(linearBonuses,0) + plainValue) * GetBonus(percentModifiers,1f);
         return Mathf.Min(val,maxValue);
     }
     public  void AddPercentModifier(float modifier)
     {
+        modifier = Mathf.Clamp(modifier, -1, 1);
         percentModifiers.Add(modifier);
     }
     public void RemovePercentModifier(float modifier)
@@ -45,6 +48,8 @@ public class Statistic  {
     }
     public void AddLinearBonus(float bonus)
     {
+        bonus = Mathf.Clamp(bonus, -1, 1);
+        
         linearBonuses.Add(bonus);
     }
     public void RemoveLinearBonus(float bonus)
@@ -53,21 +58,14 @@ public class Statistic  {
 
     }
 
-    float GetLinearBonus()
+    float GetBonus(List<float> bonuses,float initialBonus)
     {
-            float linearBonus = 0;
-            for (int i = 0; i < linearBonuses.Count; i++)
-                linearBonus += linearBonuses[i];
-            return linearBonus;
+    
+        for (int i = 0; i < bonuses.Count; i++)
+            initialBonus += bonuses[i];
+        return initialBonus >= 0 ? initialBonus : 0;
     }
-    float GetPercentModifier()
-    {
-            float percentModifier = 1f;
-            for (int i = 0; i < percentModifiers.Count; i++)
-                percentModifier += percentModifiers[i];
-            return percentModifier;
-    }
-
+ 
 
 
 

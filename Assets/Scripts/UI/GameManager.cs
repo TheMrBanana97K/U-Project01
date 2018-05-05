@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour {
     void OnGameOver()
     {
         isGameOver = true;
+        player.OnDeath -= OnGameOver;
         GameOver.SetActive(true);
         Instructions.SetActive(false);
     }
