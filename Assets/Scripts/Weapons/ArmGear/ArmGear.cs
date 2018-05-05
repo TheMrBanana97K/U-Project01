@@ -9,15 +9,24 @@ public class ArmGear : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		slots = new Ability[slotsCount];
+        foreach(Ability spell in slots)
+        {
+            spell.Initialize(gameObject);
+        }
     }
 	
 	// Update is called once per frame
 	void Update () {
-		
-	}
+        if (Input.GetKeyDown(KeyCode.Alpha1)){
+            ActivateSpell(1);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            ActivateSpell(2);
+        }
+    }
     void ActivateSpell(int i)
     {
-        slots[i - 1].Execute();
+        slots[i - 1].TriggerAbility();
     }
 }
