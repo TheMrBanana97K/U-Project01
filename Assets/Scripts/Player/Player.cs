@@ -9,7 +9,7 @@ public class Player : MonoBehaviour {
     public Statistic speed=new Statistic(1f,10f,100f);
     public Statistic energy=new Statistic(10f,100f,1000f);
 
-    [Header("Player Status")]
+    [Header("Player State")]
     public bool isDead;
 
     // On Death Event
